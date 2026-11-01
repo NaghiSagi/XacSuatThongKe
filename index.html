@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác suất và Thống kê ứng dụng - HCMUTE</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX();"></script>
+
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --accent: #059669;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --def-border: #3b82f6;
+      --def-bg: #eff6ff;
+      --exam-border: #10b981;
+      --exam-bg: #ecfdf5;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+      --radius: 10px;
+      --base-font-size: 16px;
+      --sidebar-width: 300px;
+    }
+    [data-theme="dark"] {
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --accent: #10b981;
+      --bg: #090d16;
+      --surface: #131c2e;
+      --surface-alt: #1a263d;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #23334d;
+      --def-border: #60a5fa;
+      --def-bg: #112240;
+      --exam-border: #34d399;
+      --exam-bg: #0d2824;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: var(--base-font-size); scroll-behavior: smooth; }
+    body {
+      font-family: 'Be Vietnam Pro', -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.68;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 1000; }
+    #progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+    header.site-header {
+      position: sticky; top: 0; z-index: 900; background: var(--surface);
+      border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 1440px; margin: 0 auto; padding: 0.65rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+    .brand-logo {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
+    }
+    .brand-text h1 { font-size: 1.05rem; font-weight: 700; color: var(--primary); }
+    .brand-text small { font-size: 0.75rem; color: var(--text-muted); }
+    .header-controls { display: flex; gap: 0.4rem; }
+    .btn-icon {
+      background: var(--surface-alt); border: 1px solid var(--border); color: var(--text);
+      padding: 0.4rem 0.65rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+      display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.15s;
+    }
+    .btn-icon:hover { background: var(--primary); color: #fff; }
+    .app-layout { display: flex; max-width: 1440px; margin: 0 auto; width: 100%; flex: 1; }
+    aside.sidebar {
+      width: var(--sidebar-width); flex-shrink: 0; position: sticky; top: 55px;
+      height: calc(100vh - 55px); overflow-y: auto; background: var(--surface);
+      border-right: 1px solid var(--border); padding: 1.25rem 0.85rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .sidebar-section-title {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 0.2rem; }
+    .nav-link {
+      display: block; padding: 0.45rem 0.65rem; border-radius: 6px; color: var(--text);
+      text-decoration: none; font-size: 0.85rem; transition: all 0.15s;
+    }
+    .nav-link:hover { background: var(--surface-alt); color: var(--primary); }
+    .nav-link.active { background: var(--primary); color: #fff !important; font-weight: 600; }
+    main.main-content { flex: 1; min-width: 0; padding: 1.75rem 2.25rem; }
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(30,64,175,0.08), rgba(5,150,105,0.08));
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;
+    }
+    .hero-banner h2 { font-size: 1.9rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+    .chapter-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem; margin-bottom: 2.5rem;
+    }
+    .chapter-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.35rem; display: flex; flex-direction: column; justify-content: space-between;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .chapter-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--primary-light); }
+    .card-badge {
+      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem;
+      border-radius: 12px; text-transform: uppercase; align-self: flex-start; margin-bottom: 0.5rem;
+    }
+    .badge-ready { background: #dcfce7; color: #15803d; }
+    .card-ch-num { font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+    .card-title { font-size: 1.15rem; font-weight: 700; margin: 0.25rem 0 0.5rem; }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .chapter-header {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem 1.75rem; margin-bottom: 1.5rem;
+    }
+    .btn-back-home {
+      display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem;
+      color: var(--primary); background: none; border: none; cursor: pointer; font-weight: 600; margin-bottom: 0.5rem;
+    }
+    .tab-bar {
+      display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border);
+      margin-bottom: 1.75rem; background: var(--surface); padding: 0.4rem 0.5rem 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .tab-btn {
+      padding: 0.65rem 1.2rem; font-size: 0.95rem; font-weight: 600; background: none; border: none;
+      border-bottom: 3px solid transparent; color: var(--text-muted); cursor: pointer; margin-bottom: -2px;
+    }
+    .tab-btn:hover { color: var(--primary); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .content-section {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.75rem; margin-bottom: 1.5rem;
+    }
+    .content-section h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+    .content-section h4 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin: 1.25rem 0 0.5rem; }
+    p { margin-bottom: 1rem; text-align: justify; }
+    .callout {
+      border-left: 4px solid var(--border); background: var(--surface-alt);
+      padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1.25rem 0;
+    }
+    .callout-header { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.45rem; }
+    .callout.definition { border-left-color: var(--def-border); background-color: var(--def-bg); }
+    .callout.definition .callout-header { color: var(--primary); }
+    .callout.example { border-left-color: var(--exam-border); background-color: var(--exam-bg); }
+    .callout.example .callout-header { color: var(--accent); }
+    .math-block {
+      overflow-x: auto; padding: 0.75rem 1rem; margin: 1rem 0;
+      background: var(--surface-alt); border-radius: 8px; text-align: center; border: 1px solid var(--border);
+    }
+    .table-wrap { overflow-x: auto; margin: 1.25rem 0; }
+    table.data-table {
+      width: 100%; border-collapse: collapse; font-size: 0.92rem; background: var(--surface);
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid var(--border); padding: 0.6rem 0.85rem; text-align: center;
+    }
+    table.data-table th { background: var(--surface-alt); font-weight: 700; }
+    .exercise-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.4rem; margin-bottom: 1.5rem;
+    }
+    .exercise-title { font-weight: 700; font-size: 1.05rem; color: var(--primary); margin-bottom: 0.5rem; }
+    .solution-panel {
+      background: var(--surface-alt); border: 1px solid var(--border);
+      margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 8px; font-size: 0.92rem;
+    }
+    #back-to-top {
+      position: fixed; bottom: 24px; left: 24px; z-index: 800; width: 42px; height: 42px;
+      border-radius: 50%; background: var(--surface); border: 1px solid var(--border);
+      cursor: pointer; display: none; align-items: center; justify-content: center;
+    }
+    @media (max-width: 900px) {
+      aside.sidebar { display: none; position: fixed; left: 0; top: 55px; z-index: 950; }
+      aside.sidebar.mobile-open { display: flex; }
+      main.main-content { padding: 1.25rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-container"><div id="progress-bar"></div></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-wrap" onclick="navTo('home')">
+        <div class="brand-logo">$\Sigma$</div>
+        <div class="brand-text">
+          <h1>Xác suất & Thống kê ứng dụng</h1>
+          <small>Trường ĐH Sư phạm Kỹ thuật TP.HCM • GVC-TS Nguyễn Văn Toản (12/2023)</small>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="btn-icon" onclick="toggleSidebar()">☰ Mục lục</button>
+        <button class="btn-icon" onclick="adjustFontSize(-1)">A-</button>
+        <button class="btn-icon" onclick="adjustFontSize(0)">A</button>
+        <button class="btn-icon" onclick="adjustFontSize(1)">A+</button>
+        <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div>
+        <div class="sidebar-section-title">Danh mục 10 Chương</div>
+        <ul class="nav-list">
+          <li><a href="javascript:void(0)" class="nav-link active" id="nav-home" onclick="navTo('home')">🏠 Trang chủ tổng quan</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch1" onclick="navTo('ch1')">✓ 1. Thống kê mô tả (Tr. 7)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch2" onclick="navTo('ch2')">✓ 2. Phép tính xác suất (Tr. 27)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch3" onclick="navTo('ch3')">✓ 3. Biến ngẫu nhiên rời rạc (Tr. 55)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch4" onclick="navTo('ch4')">4. Biến ngẫu nhiên liên tục (Tr. 71)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch5" onclick="navTo('ch5')">5. Phân phối đồng thời (Tr. 92)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch6" onclick="navTo('ch6')">6. Ước lượng điểm (Tr. 109)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch7" onclick="navTo('ch7')">7. Ước lượng khoảng (Tr. 122)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch8" onclick="navTo('ch8')">8. Kiểm định giả thuyết 1 mẫu (Tr. 142)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch9" onclick="navTo('ch9')">9. Kết luận dựa trên 2 mẫu (Tr. 161)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-ch10" onclick="navTo('ch10')">10. Tương quan & Hồi quy (Tr. 188)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-app1" onclick="navTo('app1')">📑 Phụ lục 1: Phân vị $t_{\alpha,n}$ (Tr. 199)</a></li>
+          <li><a href="javascript:void(0)" class="nav-link" id="nav-app2" onclick="navTo('app2')">📑 Phụ lục 2: Phân vị $\chi^2_{\alpha,n}$ (Tr. 200)</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- VIEW: HOME -->
+      <section id="view-home">
+        <div class="hero-banner">
+          <h2>Xác suất & Thống kê ứng dụng</h2>
+          <p>Nội dung số hóa nguyên văn từng câu chữ, định nghĩa, công thức toán và bài tập từ giáo trình chính thức của Trường Đại học Sư phạm Kỹ thuật TP. Hồ Chí Minh.</p>
+        </div>
+
+        <h3 style="margin-bottom: 1.25rem;">Danh sách các chương trong giáo trình</h3>
+        <div class="chapter-grid">
+          
+          <div class="chapter-card" onclick="navTo('ch1')">
+            <span class="card-badge badge-ready">Đã nạp toàn văn</span>
+            <div>
+              <div class="card-ch-num">Chương 1 • Trang 7-26</div>
+              <h4 class="card-title">Thống kê mô tả</h4>
+              <p class="card-desc">Tổng thể & mẫu, phương pháp chọn mẫu, biểu đồ thân-lá, biểu đồ chấm, tần suất, các đặc trưng mẫu và biểu đồ hộp.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Vào học ngay →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch2')">
+            <span class="card-badge badge-ready">Đã nạp toàn văn</span>
+            <div>
+              <div class="card-ch-num">Chương 2 • Trang 27-54</div>
+              <h4 class="card-title">Phép tính xác suất</h4>
+              <p class="card-desc">Biến cố ngẫu nhiên, xác suất cổ điển, giải tích tổ hợp, xác suất có điều kiện, công thức xác suất đầy đủ & Bayes.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Vào học ngay →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch3')">
+            <span class="card-badge badge-ready">Đã nạp toàn văn</span>
+            <div>
+              <div class="card-ch-num">Chương 3 • Trang 55-70</div>
+              <h4 class="card-title">Biến ngẫu nhiên rời rạc</h4>
+              <p class="card-desc">Hàm khối lượng xác suất, hàm phân phối tích lũy, kỳ vọng, phương sai, phân phối Nhị thức, Siêu bội, Nhị thức âm, Poisson.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Vào học ngay →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch4')">
+            <span class="card-badge badge-ready">Mục 4.1 – 4.10</span>
+            <div>
+              <div class="card-ch-num">Chương 4 • Trang 71-91</div>
+              <h4 class="card-title">Biến ngẫu nhiên liên tục</h4>
+              <p class="card-desc">Hàm mật độ, phân vị, phân phối đều, phân phối chuẩn, phân phối mũ, phân phối gamma, chi-bình phương.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch5')">
+            <span class="card-badge badge-ready">Mục 5.1 – 5.7</span>
+            <div>
+              <div class="card-ch-num">Chương 5 • Trang 92-108</div>
+              <h4 class="card-title">Phân phối đồng thời & Mẫu ngẫu nhiên</h4>
+              <p class="card-desc">Phân phối mẫu, phân phối của trung bình mẫu, phân phối của tổ hợp tuyến tính, phân phối Student.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch6')">
+            <span class="card-badge badge-ready">Mục 6.1 – 6.4</span>
+            <div>
+              <div class="card-ch-num">Chương 6 • Trang 109-121</div>
+              <h4 class="card-title">Ước lượng điểm</h4>
+              <p class="card-desc">Khái niệm ước lượng không chệch, phương pháp mô-men, phương pháp hợp lý cực đại (MLE).</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch7')">
+            <span class="card-badge badge-ready">Mục 7.1 – 7.8</span>
+            <div>
+              <div class="card-ch-num">Chương 7 • Trang 122-141</div>
+              <h4 class="card-title">Ước lượng khoảng</h4>
+              <p class="card-desc">Khoảng tin cậy cho trung bình phân phối chuẩn, phương sai, tỷ lệ tổng thể mẫu lớn, sai số và cỡ mẫu.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch8')">
+            <span class="card-badge badge-ready">Mục 8.1 – 8.6</span>
+            <div>
+              <div class="card-ch-num">Chương 8 • Trang 142-160</div>
+              <h4 class="card-title">Kiểm định giả thuyết 1 mẫu</h4>
+              <p class="card-desc">Giả thuyết thống kê, kiểm định trung bình, kiểm định tỷ lệ, tính toán P-giá trị và miền bác bỏ.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch9')">
+            <span class="card-badge badge-ready">Mục 9.1 – 9.6</span>
+            <div>
+              <div class="card-ch-num">Chương 9 • Trang 161-187</div>
+              <h4 class="card-title">Các kết luận dựa trên hai mẫu</h4>
+              <p class="card-desc">Kiểm định và khoảng tin cậy hiệu hai trung bình, số liệu ghép đôi, hiệu hai tỷ lệ.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('ch10')">
+            <span class="card-badge badge-ready">Mục 10.1 – 10.4</span>
+            <div>
+              <div class="card-ch-num">Chương 10 • Trang 188-198</div>
+              <h4 class="card-title">Tương quan & Hồi quy tuyến tính</h4>
+              <p class="card-desc">Hồi quy tuyến tính đơn, phương pháp bình phương bé nhất, hệ số tương quan Pearson.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem chi tiết →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('app1')">
+            <span class="card-badge badge-ready">Phụ lục 1</span>
+            <div>
+              <div class="card-ch-num">Phụ lục 1 • Trang 199</div>
+              <h4 class="card-title">Bảng phân vị Student $t_{\alpha, n}$</h4>
+              <p class="card-desc">Bảng giá trị tới hạn của phân phối Student theo bậc tự do $n$ và mức xác suất $\alpha$.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem bảng tra →</div>
+          </div>
+
+          <div class="chapter-card" onclick="navTo('app2')">
+            <span class="card-badge badge-ready">Phụ lục 2</span>
+            <div>
+              <div class="card-ch-num">Phụ lục 2 • Trang 200</div>
+              <h4 class="card-title">Bảng phân vị $\chi^2_{\alpha, n}$</h4>
+              <p class="card-desc">Bảng giá trị tới hạn của phân phối Chi-bình phương theo bậc tự do $n$ và mức xác suất $\alpha$.</p>
+            </div>
+            <div style="color:var(--primary); font-weight:600; font-size:0.85rem;">Xem bảng tra →</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 1 -->
+      <section id="view-ch1" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Quay lại danh sách chương</button>
+          <h2>Chương 1: THỐNG KÊ MÔ TẢ</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 7 – 26</p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchChTab('ch1', 'theory', this)">📖 Lý thuyết giáo trình</button>
+          <button class="tab-btn" onclick="switchChTab('ch1', 'exercises', this)">✍️ Bài tập tự luận (9 bài)</button>
+        </div>
+
+        <div class="tab-pane active" id="ch1-theory">
+          <div class="content-section">
+            <h3>MỤC TIÊU CHƯƠNG 1</h3>
+            <p>Sau khi học xong chương này sinh viên có khả năng: Giải thích tại sao kiến thức thống kê lại quan trọng; Phân biệt thống kê mô tả và thống kê suy luận; Liệt kê các giá trị liên quan đến thực hành thống kê; Xây dựng và giải thích biểu đồ chấm, biểu đồ thân lá; Tóm tắt các biến định lượng bằng bảng phân phối tần số và tần suất; Tính toán và giải thích giá trị trung bình mẫu, trung vị mẫu, phương sai mẫu và độ lệch chuẩn mẫu; Xây dựng và phân tích biểu đồ hộp.</p>
+          </div>
+
+          <div class="content-section">
+            <h3>1.1 TỔNG THỂ VÀ MẪU</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 1.1.1</div>
+              <p><i>Tổng thể là tập hợp tất cả các đối tượng hoặc số đo cần nghiên cứu.</i></p>
+            </div>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 1.1.2</div>
+              <p><i>Mẫu là một tập con dữ liệu được chọn từ tổng thể. Cỡ mẫu là số phần tử của mẫu.</i></p>
+            </div>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 1.1.3</div>
+              <p><i>Kết luận thống kê là ước lượng, dự đoán, quyết định hoặc tổng quát hóa về tổng thể dựa trên thông tin có trong một mẫu.</i></p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>1.4 ĐẶC TRƯNG MẪU</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 1.4.1 (Trung bình và phương sai mẫu)</div>
+              <div class="math-block">$$\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i, \quad s^2 = \frac{1}{n-1}\sum_{i=1}^n (x_i - \bar{x})^2, \quad s = \sqrt{s^2}$$</div>
+            </div>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 1.4.2 (Trung vị mẫu $\tilde{x}$)</div>
+              <p>Nếu $n$ chẵn: $\tilde{x} = \frac{1}{2}(x_{\frac{n}{2}} + x_{\frac{n}{2}+1})$. Nếu $n$ lẻ: $\tilde{x} = x_{\frac{n+1}{2}}$.</p>
+              <p>$IQR = Q_3 - Q_1$. Giá trị ngoại lệ: nhỏ hơn $Q_1 - 1,5(IQR)$ hoặc lớn hơn $Q_3 + 1,5(IQR)$.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="ch1-exercises">
+          <div class="exercise-card">
+            <div class="exercise-title">Bài 1 (Trang 24)</div>
+            <p>1. Để xác định tỷ lệ người dân hút thuốc, nên thăm dò tại: a. Phòng bi-a; b. Sân bowling; c. Trung tâm mua sắm; d. Thư viện?</p>
+            <div class="solution-panel"><b>Đáp án:</b> <b>c. Trung tâm mua sắm</b> vì tập hợp mọi tầng lớp dân cư đại diện nhất.</div>
+          </div>
+          <div class="exercise-card">
+            <div class="exercise-title">Bài 6 (Trang 25)</div>
+            <p>6. 25 thời gian thăng chức (tháng): 5, 7, 12, 14, 14, 14, 18, 21, 22, 23, 24, 25, 34, 34, 37, 47, 49, 64, 67, 69, 125, 192, 229, 453, 483.</p>
+            <div class="solution-panel">$\bar{x} = 83,28$; Trung vị = 34; $s \approx 128,36$; $Q_1 = 16$; $Q_3 = 68$; $IQR = 52$. Ngoại lệ: 192, 229, 453, 483.</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('home')">← Trang chủ</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch2')">Chương 2: Phép tính xác suất →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 2 -->
+      <section id="view-ch2" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Quay lại danh sách chương</button>
+          <h2>Chương 2: PHÉP TÍNH XÁC SUẤT</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 27 – 54</p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchChTab('ch2', 'theory', this)">📖 Lý thuyết giáo trình</button>
+          <button class="tab-btn" onclick="switchChTab('ch2', 'exercises', this)">✍️ Bài tập (Mục 2.7)</button>
+        </div>
+
+        <div class="tab-pane active" id="ch2-theory">
+          <div class="content-section">
+            <h3>MỤC TIÊU CHƯƠNG 2 (Nguyên văn Trang 27)</h3>
+            <p>Sau khi học xong chương này sinh viên có khả năng: Định nghĩa các thuật ngữ xác suất, thí nghiệm ngẫu nhiên và biến cố ngẫu nhiên; Tính xác suất bằng cách sử dụng hệ tiên đề; Tính xác suất bằng cách sử dụng công thức cộng, công thức nhân, công thức xác suất đầy đủ và định lý Bayes; Xác định số kết quả bằng cách sử dụng giải tích tổ hợp.</p>
+          </div>
+
+          <div class="content-section">
+            <h3>2.1 BIẾN CỐ NGẪU NHIÊN (Trang 28)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Các định nghĩa cơ bản</div>
+              <p>1. <b>Thí nghiệm ngẫu nhiên</b> (phép thử ngẫu nhiên) là thí nghiệm có nhiều kết quả mà khi thực hiện chỉ một trong các kết quả đó xuất hiện và có thể thực hiện thí nghiệm vô hạn lần.</p>
+              <p>2. Mỗi kết quả của một thí nghiệm ngẫu nhiên được gọi là một <b>biến cố sơ cấp</b>. Tập hợp tất cả các biến cố sơ cấp (hay tập các kết quả có thể có) của một thí nghiệm ngẫu nhiên được gọi là <b>không gian mẫu</b> của thí nghiệm ngẫu nhiên đó và ký hiệu là $\Omega$.</p>
+              <p>3. Ta gọi mỗi tập con của không gian mẫu $\Omega$ của một thí nghiệm ngẫu nhiên là một <b>biến cố ngẫu nhiên</b>.</p>
+              <p>4. Tập con rỗng $\emptyset$ của không gian mẫu $\Omega$ được gọi là <b>biến cố bất khả</b> hay <b>biến cố không thể</b>. Không gian mẫu $\Omega$ còn được gọi là <b>biến cố chắc chắn</b>.</p>
+            </div>
+            <div class="callout example">
+              <div class="callout-header">Ví dụ 2.1.1 (Trang 28)</div>
+              <p>Bỏ ngẫu nhiên 5 viên bi vào 3 hộp là thí nghiệm ngẫu nhiên có $3^5 = 243$ biến cố sơ cấp. ■</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>2.2 XÁC SUẤT (Trang 30)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa cổ điển của xác suất</div>
+              <div class="math-block">$$P(A) = \frac{n(A)}{n(\Omega)}$$</div>
+              <p><b>Hệ tiên đề Kolmogorov:</b></p>
+              <p>1. $0 \le P(A) \le 1$ với mọi biến cố $A$.</p>
+              <p>2. $P(\Omega) = 1$.</p>
+              <p>3. Nếu $A$ và $B$ xung khắc ($A \cap B = \emptyset$) thì $P(A \cup B) = P(A) + P(B)$.</p>
+              <p><b>Công thức cộng tổng quát:</b> $P(A \cup B) = P(A) + P(B) - P(AB)$.</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>2.4 XÁC SUẤT CÓ ĐIỀU KIỆN (Trang 42)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa xác suất có điều kiện</div>
+              <div class="math-block">$$P(A|B) = \frac{P(AB)}{P(B)} \quad (P(B) > 0)$$</div>
+              <p><b>Công thức nhân:</b> $P(AB) = P(B)P(A|B) = P(A)P(B|A)$.</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>2.5 CÔNG THỨC XÁC SUẤT ĐẦY ĐỦ VÀ CÔNG THỨC BAYES (Trang 44)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Công thức xác suất đầy đủ</div>
+              <p>Nếu $\{B_1, B_2, \dots, B_n\}$ là một hệ biến cố đầy đủ thì với mọi biến cố $A$:</p>
+              <div class="math-block">$$P(A) = \sum_{i=1}^n P(B_i)P(A|B_i)$$</div>
+            </div>
+            <div class="callout definition">
+              <div class="callout-header">Công thức Bayes</div>
+              <div class="math-block">$$P(B_k|A) = \frac{P(B_k)P(A|B_k)}{\sum_{i=1}^n P(B_i)P(A|B_i)}$$</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="ch2-exercises">
+          <div class="content-section">
+            <h3>2.7 BÀI TẬP CHƯƠNG 2 (Trang 47 – 54)</h3>
+            <p>Mục này gồm 22 bài tập tự luận trong giáo trình về phép đếm tổ hợp, xác suất có điều kiện và công thức Bayes.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch1')">← Chương 1</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch3')">Chương 3: Biến ngẫu nhiên rời rạc →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 3 (TOÀN VĂN NGUYÊN BẢN TRANG 55 - 70) -->
+      <section id="view-ch3" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Quay lại danh sách chương</button>
+          <h2>Chương 3: BIẾN NGẪU NHIÊN RỜI RẠC</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 55 – 70 (Trích xuất nguyên văn)</p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchChTab('ch3', 'theory', this)">📖 Lý thuyết toàn văn</button>
+          <button class="tab-btn" onclick="switchChTab('ch3', 'exercises', this)">✍️ Bài tập tự luận (Mục 3.8)</button>
+        </div>
+
+        <div class="tab-pane active" id="ch3-theory">
+          
+          <div class="content-section">
+            <h3>MỤC TIÊU CHƯƠNG 3 (Nguyên văn Trang 55)</h3>
+            <p>Sau khi học xong chương này sinh viên có khả năng:</p>
+            <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+              <li>Xác định phân phối xác suất của biến ngẫu nhiên rời rạc.</li>
+              <li>Tính giá trị trung bình, phương sai và độ lệch chuẩn của phân phối xác suất rời rạc.</li>
+              <li>Áp dụng phân phối nhị thức để tính xác suất.</li>
+              <li>Áp dụng phân phối siêu bội để tính xác suất.</li>
+              <li>Áp dụng phân phối nhị thức âm để tính xác suất.</li>
+              <li>Áp dụng phân phối Poisson để tính xác suất.</li>
+            </ul>
+            <p>Một thí nghiệm có thể chứa nhiều đặc trưng có thể đo lường được. Tuy nhiên, trong hầu hết các trường hợp, người làm thí nghiệm sẽ tập trung vào một số đặc trưng cụ thể của thí nghiệm. Ví dụ, một kỹ sư giao thông có thể tập trung vào số lượng phương tiện di chuyển trên một con đường nhất định hoặc theo một hướng nhất định hơn là nhãn hiệu phương tiện hoặc số lượng hành khách trên mỗi phương tiện. Nói chung, mỗi kết quả của một thí nghiệm có thể được liên kết với một số bằng cách chỉ định quy tắc kết hợp. Khái niệm về một biến ngẫu nhiên cho phép chúng ta chuyển từ các kết quả thí nghiệm sang một hàm số của các kết quả.</p>
+          </div>
+
+          <div class="content-section">
+            <h3>3.1 BIẾN NGẪU NHIÊN (Trang 55 – 56)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.1.1 (Trang 55)</div>
+              <p><i>Cho $\Omega$ là không gian mẫu của một thí nghiệm ngẫu nhiên. Biến ngẫu nhiên $X$ là qui tắc cho tương ứng mỗi biến cố sơ cấp $\omega \in \Omega$ với một số thực $X(\omega) = x$. Biến ngẫu nhiên là một hàm có tập xác định là không gian mẫu và tập giá trị là tập các số thực.</i></p>
+            </div>
+
+            <div class="callout example">
+              <div class="callout-header">Ví dụ 3.1.1 (Trang 55)</div>
+              <p>Tung một con xúc xắc công bằng và gọi $X$ là số chấm trên mặt xuất hiện. $X$ là qui tắc cho tương ứng kết quả xuất hiện mặt $i$ chấm với số thực $i$, $i = 1, 2, 3, 4, 5, 6$, nên $X$ là biến ngẫu nhiên.</p>
+              <p style="margin:0;">Lưu ý rằng $X(\omega) = i$ với xác suất $1/6$ ($i = 1, 2, 3, 4, 5, 6$). ■</p>
+            </div>
+
+            <p>Biến ngẫu nhiên được ký hiệu bằng một chữ in hoa ($X, Y, Z, \dots$) và bất kỳ giá trị thực cụ thể nào của biến ngẫu nhiên được ký hiệu bằng chữ thường tương ứng ($x, y, z, \dots$). Ta xét hai loại biến ngẫu nhiên, là biến ngẫu nhiên rời rạc và biến ngẫu nhiên liên tục. Trong chương này, ta sẽ xét các biến ngẫu nhiên rời rạc.</p>
+
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.1.2 (Trang 56)</div>
+              <p><i>Một biến ngẫu nhiên $X$ được gọi là rời rạc nếu các giá trị có thể của nó tạo thành một tập hợp hữu hạn hoặc vô hạn đếm được (có thể đánh số các giá trị của $X$ bởi các số tự nhiên). Nói cách khác, $X$ là rời rạc nếu tập các giá trị của $X$ có dạng $\{x_1, x_2, \dots, x_n\}$ (hữu hạn) hoặc $\{x_1, x_2, \dots, x_n, \dots\}$ (vô hạn đếm được).</i></p>
+            </div>
+
+            <div class="callout example">
+              <div class="callout-header">Ví dụ 3.1.2 (Trang 56)</div>
+              <p style="margin:0;">Giả sử một công ty kinh doanh Internet có 1000 lượt truy cập vào một ngày cụ thể. Gọi $X$ là số lần bán hàng đạt được vào ngày hôm đó. Khi đó, $X$ có thể nhận các giá trị $0, 1, \dots, 1000$. Vì vậy, $X$ là rời rạc. ■</p>
+            </div>
+
+            <div class="callout example">
+              <div class="callout-header">Ví dụ 3.1.3 (Trang 56)</div>
+              <p style="margin:0;">Tung một con xúc xắc cho đến khi nào mặt 6 chấm xuất hiện thì dừng và gọi $X$ là số lần tung. Khi đó, $X$ có thể nhận các giá trị $0, 1, \dots, n, \dots$. Vì vậy, $X$ là rời rạc. ■</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.2 PHÂN PHỐI XÁC SUẤT CỦA BIẾN NGẪU NHIÊN RỜI RẠC (Trang 56 – 59)</h3>
+            <p>Cho $X$ là biến ngẫu nhiên rời rạc nhận các giá trị $x_1, x_2, x_3, \dots$</p>
+
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.2.1 (Trang 56)</div>
+              <p><i>Hàm khối lượng xác suất của biến ngẫu nhiên rời rạc $X$ là hàm xác định với mọi số thực $x$ bởi</i></p>
+              <div class="math-block">
+                $$p(x) = P(X = x) = P(\omega \in \Omega: X(\omega) = x) = \begin{cases} P(X = x_i), & i = 1, 2, 3, \dots \\ 0, & x \notin \{x_1, x_2, x_3, \dots\} \end{cases}$$
+              </div>
+              <p>Hàm khối lượng xác suất được gọi đơn giản hơn là hàm xác suất.</p>
+            </div>
+
+            <p>Ta gọi bảng</p>
+            <div class="table-wrap">
+              <table class="data-table">
+                <tbody>
+                  <tr><td><b>$x$</b></td><td>$x_1$</td><td>$x_2$</td><td>$x_3$</td><td>$\dots$</td></tr>
+                  <tr><td><b>$p(x)$</b></td><td>$p(x_1)$</td><td>$p(x_2)$</td><td>$p(x_3)$</td><td>$\dots$</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>là bảng phân phối xác suất của biến ngẫu nhiên rời rạc $X$.</p>
+
+            <p>Hàm phân phối tích lũy $F$ của biến ngẫu nhiên $X$ là hàm xác định với mọi số thực $x$ bởi</p>
+            <div class="math-block">$$F(x) = P(X \le x) = \sum_{y: y \le x} p(y)$$</div>
+            <p>Hàm phân phối tích lũy còn được gọi là hàm phân phối xác suất hay đơn giản là hàm phân phối. Kí hiệu: Ta sẽ sử dụng kí hiệu $X \sim F$ để biểu thị rằng $F$ là hàm phân phối của $X$.</p>
+
+            <h4 style="color:var(--text);">TÍNH CHẤT CỦA HÀM XÁC SUẤT</h4>
+            <p>Từ Định nghĩa 3.2.1 ta suy ra:</p>
+            <ol style="padding-left:1.5rem; margin-bottom:1rem;">
+              <li>Hàm xác suất $p(x)$ không âm: $p(x) \ge 0$ với mọi $x$.</li>
+              <li>Ngoài ra, vì $X$ phải nhận một trong các giá trị $x_1, x_2, x_3, \dots$, nên
+                <div class="math-block">$$\sum_{x \in \{x_1, x_2, \dots\}} p(x) = 1$$</div>
+              </li>
+            </ol>
+
+            <div class="callout example">
+              <div class="callout-header">Ví dụ 3.2.1 (Trang 57)</div>
+              <p>Lấy ngẫu nhiên 2 sản phẩm từ một lô hàng có 6 sản phẩm loại 1 và 4 sản phẩm loại 2. Gọi $X$ là số sản phẩm loại 1 lấy ra.</p>
+              <p>a. Tìm hàm xác suất của $X$<br>b. Lập bảng phân phối xác suất của $X$<br>c. Tìm hàm phân phối xác suất của $X$.</p>
+              <p><b>Giải:</b> $X$ có thể nhận giá trị $0, 1, 2$ với xác suất tương ứng là:</p>
+              <div class="math-block">
+                $$P(X=0) = \frac{C_4^2}{C_{10}^2} = \frac{2}{15}, \quad P(X=1) = \frac{6 \times 4}{C_{10}^2} = \frac{8}{15}, \quad P(X=2) = \frac{C_6^2}{C_{10}^2} = \frac{1}{3}$$
+              </div>
+              <p>a. Hàm xác suất: $p(0)=2/15, p(1)=8/15, p(2)=1/3$; $p(x)=0$ khi $x \notin \{0, 1, 2\}$.</p>
+              <p>b. Bảng phân phối xác suất:</p>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <tbody>
+                    <tr><td><b>$x$</b></td><td>0</td><td>1</td><td>2</td></tr>
+                    <tr><td><b>$p(x)$</b></td><td>$2/15$</td><td>$8/15$</td><td>$1/3$</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>c. Hàm phân phối tích lũy:</p>
+              <div class="math-block">
+                $$F(x) = \begin{cases} 0, & x < 0 \\ 2/15, & 0 \le x < 1 \\ 2/3, & 1 \le x < 2 \\ 1, & x \ge 2 \end{cases}$$
+              </div>
+              <p style="margin:0;">■</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.3 KỲ VỌNG VÀ PHƯƠNG SAI (Trang 59 – 62)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.3.1 (Kỳ vọng)</div>
+              <p><i>Cho $X$ là biến ngẫu nhiên rời rạc có tập giá trị $D$ với hàm xác suất $p(x)$. Khi đó kỳ vọng của $X$, ký hiệu là $E(X)$, được xác định bởi</i></p>
+              <div class="math-block">$$E(X) = \sum_{x \in D} x p(x)$$</div>
+              <p>với điều kiện $\sum_{x \in D} |x| p(x) < \infty$.</p>
+            </div>
+
+            <p><b>Một số tính chất của kỳ vọng:</b></p>
+            <ol style="padding-left:1.5rem; margin-bottom:1rem;">
+              <li>$E(Y) = \sum_{x \in D} f(x)p(x)$ với $Y = f(X)$.</li>
+              <li>$E(aX + b) = aE(X) + b$.</li>
+              <li>$E(X + Y) = E(X) + E(Y)$.</li>
+            </ol>
+
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.3.2 (Phương sai)</div>
+              <p><i>Cho $X$ là biến ngẫu nhiên rời rạc có giá trị trung bình $\mu$. Khi đó phương sai của $X$, ký hiệu là $Var(X)$ (hay $V(X), D(X)$), được xác định bởi</i></p>
+              <div class="math-block">$$Var(X) = E[(X - \mu)^2] = E(X^2) - \mu^2$$</div>
+              <p>Căn bậc hai của phương sai, ký hiệu là $\sigma$, được gọi là độ lệch chuẩn: $\sigma = \sqrt{Var(X)}$.</p>
+              <p>Tính chất: $Var(aX + b) = a^2 Var(X)$.</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.4 PHÂN PHỐI NHỊ THỨC (Trang 62 – 63)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.4.2 & Hàm xác suất</div>
+              <p>Giả sử có $n$ thí nghiệm ngẫu nhiên độc lập, trong mỗi thí nghiệm biến cố $A$ xuất hiện với xác suất $p$ ($0 < p < 1$). Gọi $X$ là số lần xuất hiện biến cố $A$ trong $n$ thí nghiệm này, khi đó $X \sim B(n, p)$.</p>
+              <div class="math-block">$$b(x; n, p) = P(X = x) = C_n^x p^x (1 - p)^{n-x}, \quad x = 0, 1, 2, \dots, n$$</div>
+              <p><b>Kỳ vọng và phương sai của phân phối nhị thức:</b></p>
+              <div class="math-block">$$E(X) = np, \quad Var(X) = np(1 - p)$$</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.5 PHÂN PHỐI SIÊU BỘI (Trang 63 – 65)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.5.1 & Hàm xác suất</div>
+              <p>Lấy ngẫu nhiên $n$ phần tử từ tập chứa $N$ phần tử, trong đó có $M$ phần tử có dấu hiệu $A$. Gọi $X$ là số phần tử có dấu hiệu $A$ lấy ra: $X \sim H(N, M, n)$.</p>
+              <div class="math-block">
+                $$h(x; N, M, n) = P(X = x) = \frac{C_M^x C_{N-M}^{n-x}}{C_N^n}$$
+              </div>
+              <p><b>Kỳ vọng và phương sai:</b></p>
+              <div class="math-block">$$E(X) = n\frac{M}{N}, \quad Var(X) = n\frac{M}{N}\left(1 - \frac{M}{N}\right)\frac{N-n}{N-1}$$</div>
+              <p><b>Xấp xỉ nhị thức:</b> Khi $n/N \le 0,05$, ta có thể xấp xỉ $h(x; N, M, n) \approx b(x; n, p)$ với $p = M/N$.</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.6 PHÂN PHỐI NHỊ THỨC ÂM (Trang 65 – 66)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.6.1</div>
+              <p>Thực hiện các phép thử độc lập với xác suất thành công $p$ cho đến khi biến cố $A$ xuất hiện đúng $r$ lần thì dừng. Gọi $X$ là số lần không xuất hiện biến cố $A$: $X \sim NB(r, p)$. (Khi $r=1$ gọi là phân phối hình học).</p>
+              <div class="math-block">$$nb(x; r, p) = C_{x+r-1}^{r-1} p^r (1-p)^x, \quad x = 0, 1, 2, \dots$$</div>
+              <div class="math-block">$$E(X) = \frac{r(1-p)}{p}, \quad Var(X) = \frac{r(1-p)}{p^2}$$</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3>3.7 PHÂN PHỐI POISSON (Trang 66 – 67)</h3>
+            <div class="callout definition">
+              <div class="callout-header">Định nghĩa 3.7.1</div>
+              <p>Biến ngẫu nhiên rời rạc $X \sim Poi(\lambda)$ ($\lambda > 0$):</p>
+              <div class="math-block">$$p(x; \lambda) = P(X = x) = \frac{e^{-\lambda}\lambda^x}{x!}, \quad x = 0, 1, 2, \dots$$</div>
+              <div class="math-block">$$E(X) = Var(X) = \lambda$$</div>
+              <p><b>Xấp xỉ Poisson cho nhị thức:</b> Khi $n$ lớn, $p$ nhỏ sao cho $np < 5$, ta xấp xỉ $b(x; n, p) \approx p(x; \lambda)$ với $\lambda = np$.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="tab-pane" id="ch3-exercises">
+          <div class="content-section">
+            <h3>3.8 BÀI TẬP CHƯƠNG 3 (Trang 67 – 70)</h3>
+            
+            <div class="exercise-card">
+              <div class="exercise-title">Bài 1 (Trang 67)</div>
+              <p>Một virus máy tính đang cố làm hỏng hai tệp. Tệp đầu tiên sẽ bị hỏng với xác suất 0,4. Độc lập với nó, tệp thứ hai sẽ bị hỏng với xác suất 0,3. Xác định hàm xác suất của số lượng tệp bị hỏng $X$.</p>
+              <div class="solution-panel">
+                <b>Giải:</b> $X \in \{0, 1, 2\}$.<br>
+                $P(X=0) = (1 - 0,4)(1 - 0,3) = 0,6 \times 0,7 = 0,42$.<br>
+                $P(X=1) = 0,4 \times 0,7 + 0,6 \times 0,3 = 0,28 + 0,18 = 0,46$.<br>
+                $P(X=2) = 0,4 \times 0,3 = 0,12$.
+              </div>
+            </div>
+
+            <div class="exercise-card">
+              <div class="exercise-title">Bài 2 (Trang 67)</div>
+              <p>Năm nam và 6 nữ được xếp hạng theo điểm của họ trong một kỳ thi. Giả sử không có hai điểm giống nhau và tất cả các xếp hạng có thể đều có khả năng như nhau. Gọi $X$ là thứ hạng cao nhất mà một nữ đạt được (ví dụ: $X=2$ nếu người đứng đầu là nam và người ở vị trí tiếp theo là nữ). Tính kỳ vọng và phương sai của $X$.</p>
+            </div>
+
+            <div class="exercise-card">
+              <div class="exercise-title">Bài 3 (Trang 67)</div>
+              <p>Một người muốn đầu tư 10000 USD vào cổ phiếu của công ty M và N. Cổ phiếu của M có giá 20 USD/cổ phiếu, với lợi nhuận kỳ vọng là 1 USD...</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch2')">← Chương 2</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch4')">Chương 4: Biến ngẫu nhiên liên tục →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 4: BIẾN NGẪU NHIÊN LIÊN TỤC (Trang 71 - 91) -->
+      <section id="view-ch4" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Quay lại danh sách chương</button>
+          <h2>Chương 4: BIẾN NGẪU NHIÊN LIÊN TỤC</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 71 – 91</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 4 (Nguyên văn Trang 71)</h3>
+          <p>Sau khi học xong chương này sinh viên có khả năng:</p>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Sử dụng hàm mật độ xác suất để tính xác suất.</li>
+            <li>Sử dụng hàm phân phối xác suất để tính xác suất.</li>
+            <li>Tính giá trị trung bình, phương sai và độ lệch chuẩn của phân phối xác suất liên tục.</li>
+            <li>Sử dụng phân phối đều để tính xác suất.</li>
+            <li>Sử dụng phân phối chuẩn để tính xác suất.</li>
+            <li>Xấp xỉ phân phối nhị thức bởi phân phối chuẩn để tính xác suất.</li>
+            <li>Sử dụng phân phối mũ để tính xác suất.</li>
+            <li>Sử dụng phân phối gamma để tính xác suất.</li>
+          </ul>
+          <p>Tập hợp các giá trị có thể có của một biến ngẫu nhiên rời rạc là tập hữu hạn hoặc vô hạn đếm được. Một biến ngẫu nhiên có tập hợp các giá trị có thể là một khoảng (không phải là tập vô hạn đếm được). Trong chương này, ta xét loại biến ngẫu nhiên tổng quát thứ hai xuất hiện trong nhiều bài toán ứng dụng.</p>
+        </div>
+
+        <div class="content-section">
+          <h3>4.1 HÀM MẬT ĐỘ XÁC SUẤT VÀ HÀM PHÂN PHỐI XÁC SUẤT (Trang 71 – 73)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 4.1.1 (Hàm mật độ xác suất & hàm phân phối)</div>
+            <p>Cho $X$ là biến ngẫu nhiên. Giả sử rằng tồn tại một hàm có giá trị thực không âm: $f: \mathbb{R} \to [0, \infty)$ sao cho với mọi khoảng $[a, b]$,</p>
+            <div class="math-block">$$P(X \in [a, b]) = \int_a^b f(t)dt$$</div>
+            <p>Khi đó $X$ được gọi là <b>biến ngẫu nhiên liên tục</b>. Hàm $f$ được gọi là <b>hàm mật độ xác suất</b> của $X$.</p>
+            <p>Hàm phân phối xác suất tích lũy $F(x)$ được cho bởi:</p>
+            <div class="math-block">$$F(x) = P(X \le x) = \int_{-\infty}^x f(t)dt$$</div>
+          </div>
+
+          <h4 style="color:var(--text); margin-top:1rem;">TÍNH CHẤT CỦA HÀM MẬT ĐỘ VÀ HÀM PHÂN PHỐI (Trang 72)</h4>
+          <ol style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Hàm mật độ xác suất $f(x)$ không âm: $f(x) \ge 0$ với mọi $x$.</li>
+            <li>$\int_{-\infty}^{\infty} f(t)dt = 1$.</li>
+            <li>$P(a \le X \le b) = \int_a^b f(t)dt$.</li>
+            <li>$P(X = x) = 0$ với mọi $x$.</li>
+            <li>$P(a < X < b) = P(a \le X < b) = P(a < X \le b) = P(a \le X \le b)$.</li>
+            <li>Nếu $F(x)$ là hàm phân phối xác suất, thì $P(X > a) = 1 - F(a)$ và $P(a \le X \le b) = F(b) - F(a)$.</li>
+            <li>Nếu $F(x)$ khả vi tại $x$, thì $F'(x) = f(x)$.</li>
+          </ol>
+        </div>
+
+        <div class="content-section">
+          <h3>4.2 PHÂN VỊ (Trang 73 – 74)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 4.2.1 (Phân vị mức $\alpha$)</div>
+            <p>Cho biến ngẫu nhiên liên tục $X$ có hàm mật độ xác suất $f(x)$ và hàm phân phối xác suất $F(x)$.</p>
+            <p>Phân vị dưới mức $\alpha$ ($0 < \alpha < 1$) của $X$, ký hiệu $\underline{x}_\alpha$, được xác định bởi:</p>
+            <div class="math-block">$$\alpha = F(\underline{x}_\alpha) = \int_{-\infty}^{\underline{x}_\alpha} f(t)dt$$</div>
+            <p>Phân vị trên mức $\alpha$ ($0 < \alpha < 1$) của $X$, ký hiệu $\bar{x}_\alpha$, được xác định bởi:</p>
+            <div class="math-block">$$\alpha = 1 - F(\bar{x}_\alpha) = \int_{\bar{x}_\alpha}^\infty f(t)dt$$</div>
+            <p>Vì $F(\bar{x}_\alpha) = 1 - \alpha$ nên $\bar{x}_\alpha = \underline{x}_{1-\alpha}$. Trung vị: $\tilde{\mu} = \bar{x}_{0,5} = \underline{x}_{0,5}$.</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>4.3 KỲ VỌNG VÀ PHƯƠNG SAI LIÊN TỤC (Trang 74 – 76)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 4.3.1 (Kỳ vọng & Phương sai)</div>
+            <div class="math-block">$$E(X) = \int_{-\infty}^{\infty} x f(x)dx \quad (\text{với điều kiện } \int_{-\infty}^{\infty} |x|f(x)dx < \infty)$$</div>
+            <div class="math-block">$$Var(X) = E[(X - \mu)^2] = \int_{-\infty}^{\infty} (x - \mu)^2 f(x)dx = E(X^2) - \mu^2, \quad \sigma = \sqrt{Var(X)}$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>4.4 PHÂN PHỐI ĐỀU $U(a, b)$ (Trang 77 – 78)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Hàm mật độ, Kỳ vọng & Phương sai</div>
+            <div class="math-block">$$f(x) = \begin{cases} \frac{1}{b - a}, & a \le x \le b \\ 0, & x < a \text{ hoặc } x > b \end{cases}$$</div>
+            <div class="math-block">$$E(X) = \frac{a + b}{2}, \quad Var(X) = \frac{(b - a)^2}{12}$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>4.5 PHÂN PHỐI CHUẨN $N(\mu, \sigma^2)$ (Trang 78 – 82)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 4.5.1 & Phân phối chuẩn tắc $Z \sim N(0, 1)$</div>
+            <div class="math-block">$$f(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}, \quad -\infty < x < \infty$$</div>
+            <p>Kỳ vọng $E(X) = \mu$, Phương sai $Var(X) = \sigma^2$.</p>
+            <p><b>Chuẩn hóa:</b> $Z = \frac{X - \mu}{\sigma} \sim N(0, 1)$. Khi đó $f(z) = \frac{1}{\sqrt{2\pi}} e^{-z^2/2}$, $P(z) = \int_{-\infty}^z \frac{1}{\sqrt{2\pi}} e^{-t^2/2}dt$.</p>
+            <div class="callout example">
+              <div class="callout-header">Bấm máy tính Casio fx-580 (Trang 79 - 80)</div>
+              <p><b>Tính $P(z)$:</b> <code>MENU 7 2</code> $\to$ Lower: <code>-1000000</code>, Upper: nhập giá trị $z$, $\sigma$: <code>1</code>, $\mu$: <code>0</code> $\to$ Bấm <code>=</code>.</p>
+              <p><b>Tính phân vị $z_\alpha$:</b> <code>MENU 7 3</code> $\to$ Area: nhập $1 - \alpha$, $\sigma$: <code>1</code>, $\mu$: <code>0</code> $\to$ <code>=</code>.</p>
+            </div>
+            <p><b>Xấp xỉ chuẩn cho nhị thức:</b> Khi $np \ge 10$ và $n(1-p) \ge 10$, $B(n, p) \approx N(\mu = np, \sigma^2 = np(1-p))$ có hiệu chỉnh liên tục $\pm 0,5$.</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>4.6 PHÂN PHỐI MŨ, GAMMA & CHI-BÌNH PHƯƠNG (Trang 82 – 86)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Phân phối Mũ $Exp(\lambda)$ & Chi-bình phương $\chi^2(n)$</div>
+            <p><b>Mũ $Exp(\lambda)$:</b> $f(x) = \lambda e^{-\lambda x}$ ($x \ge 0$). Hàm phân phối: $F(x) = 1 - e^{-\lambda x}$. $E(X) = 1/\lambda, Var(X) = 1/\lambda^2$.</p>
+            <p><b>Gamma:</b> $f(x; \alpha, \beta) = \frac{1}{\beta^\alpha \Gamma(\alpha)} x^{\alpha - 1} e^{-x/\beta}$ ($x \ge 0$). $E(X) = \alpha\beta, Var(X) = \alpha\beta^2$.</p>
+            <p><b>Chi-bình phương $\chi^2(n)$:</b> Là phân phối gamma với $\alpha = n/2$ và $\beta = 2$. Bậc tự do $n$. Tra bảng Phụ lục 2.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch3')">← Chương 3</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch5')">Chương 5: Phân phối đồng thời →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 5: PHÂN PHỐI ĐỒNG THỜI VÀ MẪU NGẪU NHIÊN (Trang 92 - 108) -->
+      <section id="view-ch5" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 5: PHÂN PHỐI ĐỒNG THỜI VÀ MẪU NGẪU NHIÊN</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 92 – 108</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 5 (Nguyên văn Trang 92)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Xác định phân phối xác suất đồng thời của các biến ngẫu nhiên rời rạc và liên tục.</li>
+            <li>Sử dụng phân phối xác suất đồng thời để tính xác suất, kỳ vọng và hiệp phương sai.</li>
+            <li>Trình bày cách xây dựng phân phối mẫu của trung bình mẫu $\bar{X}$.</li>
+            <li>Áp dụng định lý giới hạn trung tâm (CLT) để tính xác suất mẫu lớn.</li>
+            <li>Phân phối của tổ hợp tuyến tính và phân phối Student $t$.</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>5.1 PHÂN PHỐI XÁC SUẤT ĐỒNG THỜI (Trang 92 – 98)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 5.1.1 & 5.1.4 (Rời rạc và liên tục)</div>
+            <p><b>Rời rạc:</b> $p(x, y) = P(X = x, Y = y)$. Tính chất: $p(x, y) \ge 0$ và $\sum_x \sum_y p(x, y) = 1$.</p>
+            <p>Phân phối biên: $p_X(x) = \sum_y p(x, y)$, $p_Y(y) = \sum_x p(x, y)$.</p>
+            <p><b>Liên tục:</b> $P((X, Y) \in A) = \iint_A f(x, y)dxdy$. Hàm mật độ biên: $f_X(x) = \int_{-\infty}^{\infty} f(x, y)dy$.</p>
+            <p><b>Độc lập:</b> $X$ và $Y$ độc lập khi và chỉ khi $p(x, y) = p_X(x)p_Y(y)$ (hoặc $f(x, y) = f_X(x)f_Y(y)$).</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>5.3 PHÂN PHỐI CỦA TRUNG BÌNH MẪU & ĐỊNH LÝ GIỚI HẠN TRUNG TÂM (Trang 101 – 102)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Kỳ vọng, phương sai của $\bar{X}$ & CLT</div>
+            <p>Cho $X_1, X_2, \dots, X_n$ là mẫu ngẫu nhiên cỡ $n$ từ tổng thể có trung bình $\mu$ và phương sai $\sigma^2$:</p>
+            <div class="math-block">$$E(\bar{X}) = \mu, \quad Var(\bar{X}) = \frac{\sigma^2}{n}, \quad \sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}}$$</div>
+            <p><b>Định lý Giới hạn Trung tâm (CLT):</b> Bất kể dạng phân phối tổng thể là gì, khi cỡ mẫu $n$ đủ lớn ($n > 50$ hoặc $n \ge 30$), phân phối của trung bình mẫu $\bar{X}$ xấp xỉ phân phối chuẩn:</p>
+            <div class="math-block">$$\bar{X} \approx N\left(\mu, \frac{\sigma^2}{n}\right) \iff Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \approx N(0, 1)$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>5.4 TỔ HỢP TUYẾN TÍNH & 5.5 PHÂN PHỐI STUDENT $t$ (Trang 102 – 104)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Tổ hợp tuyến tính & Định nghĩa phân phối Student $t$</div>
+            <p>Với $Y = \sum_{i=1}^n a_i X_i$: $E(Y) = \sum a_i \mu_i$, và nếu các $X_i$ độc lập thì $Var(Y) = \sum a_i^2 \sigma_i^2$.</p>
+            <p><b>Phân phối Student $t$:</b> Nếu $Z \sim N(0, 1)$ và $Y \sim \chi^2(n)$ độc lập thì:</p>
+            <div class="math-block">$$T = \frac{Z}{\sqrt{Y/n}} = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(n-1)$$</div>
+            <p>Phân phối $t$ có hình chuông đối xứng qua 0, đuôi dày hơn chuẩn tắc, tiến về $N(0, 1)$ khi $n \to \infty$ ($n > 50$ dùng xấp xỉ chuẩn). Tra bảng Phụ lục 1.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch4')">← Chương 4</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch6')">Chương 6: Ước lượng điểm →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 6: ƯỚC LƯỢNG ĐIỂM (Trang 109 - 121) -->
+      <section id="view-ch6" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 6: ƯỚC LƯỢNG ĐIỂM</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 109 – 121</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 6 (Nguyên văn Trang 109)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Tính toán và giải thích ước lượng điểm của trung bình tổng thể, tỷ lệ tổng thể, phương sai tổng thể.</li>
+            <li>Định nghĩa và kiểm tra tính không chệch của ước lượng: $E(\hat{\theta}) = \theta$.</li>
+            <li>Xác định ước lượng điểm bằng phương pháp Moment (MOM).</li>
+            <li>Xác định ước lượng điểm bằng phương pháp Hợp lý cực đại (MLE).</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>6.1 KHÁI NIỆM ƯỚC LƯỢNG ĐIỂM & TÍNH KHÔNG CHỆCH (Trang 109 – 114)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa 6.1.1 & 6.1.2 (Ước lượng không chệch)</div>
+            <p>Ước lượng điểm $\hat{\theta}$ là một thống kê $g(X_1, \dots, X_n)$ dùng để dự đoán tham số $\theta$ của tổng thể.</p>
+            <p>Ước lượng $\hat{\theta}$ được gọi là <b>không chệch</b> nếu:</p>
+            <div class="math-block">$$E(\hat{\theta}) = \theta \quad \text{với mọi giá trị } \theta$$</div>
+            <p>Độ chệch được xác định bởi: $B(\hat{\theta}) = E(\hat{\theta}) - \theta$. Ước lượng không chệch có độ chệch bằng 0.</p>
+            <p><b>Các kết quả kinh điển:</b></p>
+            <p>• Trung bình mẫu $\bar{X} = \frac{1}{n}\sum X_i$ là ước lượng không chệch của trung bình tổng thể $\mu$ vì $E(\bar{X}) = \mu$.</p>
+            <p>• Phương sai mẫu hiệu chỉnh $S^2 = \frac{1}{n-1}\sum (X_i - \bar{X})^2$ là ước lượng không chệch của phương sai tổng thể $\sigma^2$ vì $E(S^2) = \sigma^2$.</p>
+            <p>• Tỷ lệ mẫu $\hat{p} = \frac{X}{n}$ là ước lượng không chệch của tỷ lệ tổng thể $p$ vì $E(\hat{p}) = p$.</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>6.2 CÁC PHƯƠNG PHÁP ƯỚC LƯỢNG ĐIỂM (Trang 114 – 119)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Phương pháp Moment (MOM) & Hợp lý cực đại (MLE)</div>
+            <p><b>1. Phương pháp Moment:</b> Cho cân bằng moment lý thuyết cấp $k$ với moment mẫu cấp $k$:</p>
+            <div class="math-block">$$E(X^k) = \frac{1}{n}\sum_{i=1}^n X_i^k, \quad k = 1, 2, \dots, m$$</div>
+            <p>Giải hệ phương trình này để tìm các ước lượng $\hat{\theta}_1, \dots, \hat{\theta}_m$.</p>
+            <p><b>2. Phương pháp Hợp lý cực đại (MLE):</b> Xây dựng hàm hợp lý:</p>
+            <div class="math-block">$$L(\theta) = f(x_1, \theta) \cdot f(x_2, \theta) \cdots f(x_n, \theta) = \prod_{i=1}^n f(x_i; \theta)$$</div>
+            <p>Tìm $\hat{\theta}$ làm cực đại hóa hàm log-hợp lý $\ln L(\theta)$ bằng cách giải phương trình đạo hàm: $\frac{d \ln L(\theta)}{d\theta} = 0$.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch5')">← Chương 5</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch7')">Chương 7: Ước lượng khoảng →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 7: ƯỚC LƯỢNG KHOẢNG (Trang 122 - 141) -->
+      <section id="view-ch7" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 7: ƯỚC LƯỢNG KHOẢNG</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 122 – 141</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 7 (Nguyên văn Trang 122)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Xây dựng khoảng tin cậy hai phía, bên trái và bên phải cho trung bình tổng thể chuẩn $\mu$.</li>
+            <li>Xây dựng khoảng tin cậy cho phương sai tổng thể chuẩn $\sigma^2$.</li>
+            <li>Khoảng tin cậy mẫu lớn cho trung bình tổng thể và tỷ lệ tổng thể $p$.</li>
+            <li>Xác định sai số biên và cỡ mẫu cần thiết $n$.</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>7.1 – 7.2 KHOẢNG TIN CẬY CHO TRUNG BÌNH TỔNG THỂ $\mu$ (Trang 122 – 127)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Công thức khoảng tin cậy $1 - \alpha$ cho $\mu$</div>
+            <p><b>Trường hợp 1: Phân phối chuẩn, đã biết $\sigma$ (hoặc mẫu lớn $n > 50$):</b></p>
+            <div class="math-block">$$\left[ \bar{x} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}}, \;\; \bar{x} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}} \right]$$</div>
+            <p>Khoảng tin cậy tối đa (chặn trên): $\mu \le \bar{x} + z_\alpha \frac{\sigma}{\sqrt{n}}$. Chặn dưới: $\mu \ge \bar{x} - z_\alpha \frac{\sigma}{\sqrt{n}}$.</p>
+            <p><b>Trường hợp 2: Phân phối chuẩn, chưa biết $\sigma$, mẫu nhỏ ($n \le 50$):</b> Sử dụng phân phối Student $t$ bậc tự do $n - 1$:</p>
+            <div class="math-block">$$\left[ \bar{x} - t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}, \;\; \bar{x} + t_{\alpha/2, n-1}\frac{s}{\sqrt{n}} \right]$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>7.3 KHOẢNG TIN CẬY CHO PHƯƠNG SAI $\sigma^2$ (Trang 127 – 129)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định lý 7.3.1 (Phân phối Chi-bình phương)</div>
+            <p>Dựa trên thống kê $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$, khoảng tin cậy $1-\alpha$ cho phương sai $\sigma^2$ của tổng thể chuẩn là:</p>
+            <div class="math-block">$$\left[ \frac{(n-1)s^2}{\chi^2_{\alpha/2, n-1}}, \;\; \frac{(n-1)s^2}{\chi^2_{1-\alpha/2, n-1}} \right]$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>7.5 KHOẢNG TIN CẬY MẪU LỚN CHO TỶ LỆ $p$ & CỠ MẪU (Trang 131 – 136)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Khoảng tin cậy tỷ lệ & Cỡ mẫu $n$</div>
+            <p>Với mẫu lớn ($n\hat{p} \ge 10, n(1-\hat{p}) \ge 10$), khoảng tin cậy $1-\alpha$ cho tỷ lệ $p$:</p>
+            <div class="math-block">$$\left[ \hat{p} - z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}, \;\; \hat{p} + z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} \right]$$</div>
+            <p><b>Xác định cỡ mẫu với sai số biên $E$:</b></p>
+            <p>• Ước lượng trung bình: $n = \left(\frac{z_{\alpha/2} \cdot \sigma}{E}\right)^2$.</p>
+            <p>• Ước lượng tỷ lệ: $n = \frac{z_{\alpha/2}^2 \cdot p(1-p)}{E^2}$ (nếu chưa biết $p$, chọn $p = 0,5$ để cỡ mẫu tối đa: $n = \frac{z_{\alpha/2}^2 \cdot 0,25}{E^2}$).</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch6')">← Chương 6</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch8')">Chương 8: Kiểm định 1 mẫu →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 8: KIỂM ĐỊNH GIẢ THUYẾT 1 MẪU (Trang 142 - 160) -->
+      <section id="view-ch8" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 8: KIỂM ĐỊNH GIẢ THUYẾT DỰA TRÊN MỘT MẪU</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 142 – 160</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 8 (Nguyên văn Trang 142)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Giải thích quy trình kiểm định giả thuyết 7 bước.</li>
+            <li>Phân biệt kiểm định một phía (trái/phải) và kiểm định hai phía.</li>
+            <li>Tiến hành kiểm định giả thuyết về trung bình tổng thể $\mu$ và tỷ lệ tổng thể $p$.</li>
+            <li>Tính toán và giải thích P-giá trị, hiểu rõ sai lầm loại I ($\alpha$) và sai lầm loại II ($\beta$).</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>8.1 BẢN CHẤT KIỂM ĐỊNH & HAI LOẠI SAI LẦM (Trang 142 – 145)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Giả thuyết $H_0$, Đối thuyết $H_a$ và Bảng quyết định</div>
+            <p>• <b>Sai lầm loại I ($\alpha$):</b> Bác bỏ $H_0$ khi $H_0$ đúng. Mức ý nghĩa $\alpha = P(\text{Bác bỏ } H_0 \mid H_0 \text{ đúng})$.</p>
+            <p>• <b>Sai lầm loại II ($\beta$):</b> Chấp nhận $H_0$ khi $H_0$ sai. $\beta = P(\text{Chấp nhận } H_0 \mid H_0 \text{ sai})$.</p>
+            <p><b>Quy tắc P-giá trị:</b> Nếu $P\text{-value} \le \alpha \implies$ Bác bỏ $H_0$. Nếu $P\text{-value} > \alpha \implies$ Chưa đủ bằng chứng bác bỏ $H_0$.</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>8.2 KIỂM ĐỊNH TRUNG BÌNH TỔNG THỂ $\mu$ (Trang 145 – 150)</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Trường hợp</th><th>Thống kê kiểm định</th><th>Đối thuyết $H_a$</th><th>Miền bác bỏ ($H_0$)</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="3"><b>Biết $\sigma$</b> (hoặc mẫu lớn $n > 50$)</td>
+                  <td rowspan="3">$$z = \frac{\bar{x} - \mu_0}{\sigma / \sqrt{n}}$$</td>
+                  <td>$\mu \ne \mu_0$ (hai phía)</td>
+                  <td>$|z| \ge z_{\alpha/2}$</td>
+                </tr>
+                <tr><td>$\mu < \mu_0$ (phía trái)</td><td>$z \le -z_\alpha$</td></tr>
+                <tr><td>$\mu > \mu_0$ (phía phải)</td><td>$z \ge z_\alpha$</td></tr>
+                <tr>
+                  <td rowspan="3"><b>Chưa biết $\sigma$</b> (mẫu nhỏ $n \le 50$)</td>
+                  <td rowspan="3">$$t = \frac{\bar{x} - \mu_0}{s / \sqrt{n}}$$ ($df = n-1$)</td>
+                  <td>$\mu \ne \mu_0$ (hai phía)</td>
+                  <td>$|t| \ge t_{\alpha/2, n-1}$</td>
+                </tr>
+                <tr><td>$\mu < \mu_0$ (phía trái)</td><td>$t \le -t_{\alpha, n-1}$</td></tr>
+                <tr><td>$\mu > \mu_0$ (phía phải)</td><td>$t \ge t_{\alpha, n-1}$</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>8.3 KIỂM ĐỊNH TỶ LỆ TỔNG THỂ $p$ (Trang 150 – 153)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Thống kê kiểm định tỷ lệ mẫu lớn</div>
+            <div class="math-block">$$z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1 - p_0)}{n}}}$$</div>
+            <p>• Đối thuyết $H_a: p \ne p_0 \implies$ Bác bỏ $H_0$ nếu $|z| \ge z_{\alpha/2}$.</p>
+            <p>• Đối thuyết $H_a: p < p_0 \implies$ Bác bỏ $H_0$ nếu $z \le -z_\alpha$.</p>
+            <p>• Đối thuyết $H_a: p > p_0 \implies$ Bác bỏ $H_0$ nếu $z \ge z_\alpha$.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch7')">← Chương 7</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch9')">Chương 9: Suy luận hai mẫu →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 9: CÁC KẾT LUẬN DỰA TRÊN HAI MẪU (Trang 161 - 187) -->
+      <section id="view-ch9" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 9: CÁC KẾT LUẬN DỰA TRÊN HAI MẪU</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 161 – 187</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 9 (Nguyên văn Trang 161)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Kiểm định giả thuyết và khoảng tin cậy cho hiệu hai trung bình độc lập $\mu_1 - \mu_2$.</li>
+            <li>Phân tích số liệu ghép đôi (Paired samples t-test).</li>
+            <li>Kiểm định và khoảng tin cậy cho hiệu hai tỷ lệ tổng thể $p_1 - p_2$.</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>9.1 – 9.2 HIỆU HAI TRUNG BÌNH ĐỘC LẬP $\mu_1 - \mu_2$ (Trang 161 – 174)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Các trường hợp so sánh hai trung bình độc lập</div>
+            <p><b>1. Đã biết phương sai $\sigma_1^2, \sigma_2^2$ (hoặc hai mẫu lớn $m, n > 50$):</b></p>
+            <div class="math-block">$$z = \frac{(\bar{x} - \bar{y}) - \Delta_0}{\sqrt{\frac{\sigma_1^2}{m} + \frac{\sigma_2^2}{n}}}$$</div>
+            <p>Khoảng tin cậy: $(\bar{x} - \bar{y}) \pm z_{\alpha/2}\sqrt{\frac{s_1^2}{m} + \frac{s_2^2}{n}}$.</p>
+            <p><b>2. Chưa biết phương sai, giả định $\sigma_1^2 = \sigma_2^2 = \sigma^2$ (gộp phương sai):</b></p>
+            <div class="math-block">$$s_p^2 = \frac{(m-1)s_1^2 + (n-1)s_2^2}{m + n - 2}, \quad t = \frac{(\bar{x} - \bar{y}) - \Delta_0}{s_p\sqrt{\frac{1}{m} + \frac{1}{n}}} \sim t(m + n - 2)$$</div>
+            <p><b>3. Chưa biết phương sai, $\sigma_1^2 \ne \sigma_2^2$ (xấp xỉ Welch-Satterthwaite):</b> Thống kê $t = \frac{(\bar{x} - \bar{y}) - \Delta_0}{\sqrt{s_1^2/m + s_2^2/n}}$ với bậc tự do $r$ làm tròn xuống:</p>
+            <div class="math-block">$$r = \frac{\left(s_1^2/m + s_2^2/n\right)^2}{\frac{(s_1^2/m)^2}{m-1} + \frac{(s_2^2/n)^2}{n-1}}$$</div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>9.3 PHÂN TÍCH SỐ LIỆU GHÉP ĐÔI (MẪU CẶP) (Trang 175 – 179)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Kiểm định và khoảng tin cậy mẫu cặp</div>
+            <p>Xét từng cặp $(X_i, Y_i)$, đặt sai khác $D_i = X_i - Y_i$. Đưa về bài toán 1 mẫu trên biến $D$ với trung bình $\bar{d}$ và độ lệch chuẩn $s_d$:</p>
+            <div class="math-block">$$t = \frac{\bar{d} - \mu_d}{s_d / \sqrt{n}} \sim t(n - 1)$$</div>
+            <p>Khoảng tin cậy $1-\alpha$ cho $\mu_d$: $\left[ \bar{d} - t_{\alpha/2, n-1}\frac{s_d}{\sqrt{n}}, \;\; \bar{d} + t_{\alpha/2, n-1}\frac{s_d}{\sqrt{n}} \right]$.</p>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>9.4 HIỆU HAI TỶ LỆ $p_1 - p_2$ (Trang 179 – 183)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Tỷ lệ gộp $\hat{p}$ & Thống kê kiểm định hai tỷ lệ</div>
+            <p>Tỷ lệ gộp dưới giả thuyết $H_0: p_1 = p_2$: $\hat{p} = \frac{X_1 + X_2}{n_1 + n_2}$.</p>
+            <div class="math-block">$$z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1 - \hat{p})\left(\frac{1}{n_1} + \frac{1}{n_2}\right)}} \sim N(0, 1)$$</div>
+            <p>Khoảng tin cậy $1-\alpha$ cho $p_1 - p_2$:</p>
+            <div class="math-block">$$(\hat{p}_1 - \hat{p}_2) \pm z_{\alpha/2}\sqrt{\frac{\hat{p}_1(1 - \hat{p}_1)}{n_1} + \frac{\hat{p}_2(1 - \hat{p}_2)}{n_2}}$$</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch8')">← Chương 8</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('ch10')">Chương 10: Hồi quy & Tương quan →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CHƯƠNG 10: TƯƠNG QUAN VÀ HỒI QUY TUYẾN TÍNH (Trang 188 - 198) -->
+      <section id="view-ch10" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>Chương 10: TƯƠNG QUAN VÀ HỒI QUY TUYẾN TÍNH</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 188 – 198</p>
+        </div>
+
+        <div class="content-section">
+          <h3>MỤC TIÊU CHƯƠNG 10 (Nguyên văn Trang 188)</h3>
+          <ul style="padding-left:1.5rem; margin-bottom:1rem;">
+            <li>Ước tính các hệ số phương trình hồi quy tuyến tính thực nghiệm bằng phương pháp bình phương bé nhất.</li>
+            <li>Tính toán và giải thích hệ số tương quan mẫu Pearson $r$ để đánh giá mối liên hệ tuyến tính.</li>
+            <li>Đánh giá sai số hồi quy và tính toán trên Casio fx-580.</li>
+          </ul>
+        </div>
+
+        <div class="content-section">
+          <h3>10.1 HỒI QUY TUYẾN TÍNH ĐƠN (Trang 188 – 192)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Đường hồi quy thực nghiệm $\hat{y} = A + Bx$ (Phương pháp bình phương bé nhất)</div>
+            <p>Cực tiểu hóa tổng bình phương sai số: $Q = \sum_{i=1}^n (y_i - A - Bx_i)^2 \to \min$.</p>
+            <div class="math-block">
+              $$B = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2} = \frac{n\sum x_i y_i - (\sum x_i)(\sum y_i)}{n\sum x_i^2 - (\sum x_i)^2}$$
+            </div>
+            <div class="math-block">$$A = \bar{y} - B\bar{x}$$</div>
+            <div class="callout example">
+              <div class="callout-header">Bấm máy tính Casio fx-580 (Trang 192)</div>
+              <p>1. <code>MENU 6 2</code> (Chế độ Thống kê hồi quy $y = a + bx$).<br>
+              2. Nhập bảng số liệu cho 2 cột $X$ và $Y$.<br>
+              3. Bấm <code>OPTN</code> $\to$ Chọn <code>Hồi quy (4)</code> để hiển thị trực tiếp giá trị các hệ số $a, b$ và hệ số tương quan $r$.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3>10.2 HỆ SỐ TƯƠNG QUAN PEARSON $r$ (Trang 192 – 195)</h3>
+          <div class="callout definition">
+            <div class="callout-header">Định nghĩa hệ số tương quan tuyến tính</div>
+            <div class="math-block">
+              $$r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \cdot \sum (y_i - \bar{y})^2}}$$
+            </div>
+            <p><b>Tính chất của $r$:</b></p>
+            <ol style="padding-left:1.5rem; margin-bottom:1rem;">
+              <li>$-1 \le r \le 1$.</li>
+              <li>Nếu $r > 0$: $X$ và $Y$ có mối tương quan tuyến tính dương (đồng biến).</li>
+              <li>Nếu $r < 0$: $X$ và $Y$ có tương quan tuyến tính âm (nghịch biến).</li>
+              <li>Nếu $|r| \approx 1$: Mối quan hệ tuyến tính rất mạnh. Nếu $r \approx 0$: Không có mối liên hệ tuyến tính.</li>
+              <li>Hệ số xác định $R^2 = r^2$: Đo lường tỷ lệ phần trăm sự biến thiên của $Y$ được giải thích bởi $X$.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch9')">← Chương 9</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('app1')">Phụ lục 1: Phân vị Student →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: PHỤ LỤC 1 (Trang 199) -->
+      <section id="view-app1" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>PHỤ LỤC 1: BẢNG PHÂN VỊ $t_{\alpha, n}$</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 199</p>
+        </div>
+
+        <div class="content-section">
+          <p>Giá trị phân vị trên $t_{\alpha, n}$ thỏa mãn $P(T > t_{\alpha, n}) = \alpha$ với $T \sim t(n)$. Khi $n > 50$, tra xấp xỉ chuẩn: $t_{\alpha, n} \approx z_\alpha$.</p>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>n</th><th>$\alpha=0.10$</th><th>$\alpha=0.05$</th><th>$\alpha=0.025$</th><th>$\alpha=0.01$</th><th>$\alpha=0.005$</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>3.078</td><td>6.314</td><td>12.706</td><td>31.821</td><td>63.657</td></tr>
+                <tr><td>5</td><td>1.476</td><td>2.015</td><td>2.571</td><td>3.365</td><td>4.032</td></tr>
+                <tr><td>10</td><td>1.372</td><td>1.812</td><td>2.228</td><td>2.764</td><td>3.169</td></tr>
+                <tr><td>15</td><td>1.341</td><td>1.753</td><td>2.131</td><td>2.602</td><td>2.947</td></tr>
+                <tr><td>20</td><td>1.325</td><td>1.725</td><td>2.086</td><td>2.528</td><td>2.845</td></tr>
+                <tr><td>25</td><td>1.316</td><td>1.708</td><td>2.060</td><td>2.485</td><td>2.787</td></tr>
+                <tr><td>30</td><td>1.310</td><td>1.697</td><td>2.042</td><td>2.457</td><td>2.750</td></tr>
+                <tr><td>40</td><td>1.303</td><td>1.684</td><td>2.021</td><td>2.423</td><td>2.704</td></tr>
+                <tr><td>50</td><td>1.299</td><td>1.676</td><td>2.009</td><td>2.403</td><td>2.678</td></tr>
+                <tr><td>$\infty$ ($z_\alpha$)</td><td>1.282</td><td>1.645</td><td>1.960</td><td>2.326</td><td>2.576</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('ch10')">← Chương 10</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('app2')">Phụ lục 2: Phân vị $\chi^2$ →</button>
+        </div>
+      </section>
+
+      <!-- VIEW: PHỤ LỤC 2 (Trang 200) -->
+      <section id="view-app2" style="display:none;">
+        <div class="chapter-header">
+          <button class="btn-back-home" onclick="navTo('home')">← Trang chủ</button>
+          <h2>PHỤ LỤC 2: BẢNG PHÂN VỊ $\chi^2_{\alpha, n}$</h2>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Giáo trình XSTK Ứng dụng HCMUTE • Trang 200</p>
+        </div>
+
+        <div class="content-section">
+          <p>Giá trị phân vị trên $\chi^2_{\alpha, n}$ thỏa mãn $P(X > \chi^2_{\alpha, n}) = \alpha$ với $X \sim \chi^2(n)$. Khi $n > 50$, dùng công thức xấp xỉ Wilson-Hilferty: $\chi^2_{\alpha, n} \approx n\left(1 - \frac{2}{9n} + z_\alpha\sqrt{\frac{2}{9n}}\right)^3$.</p>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>n</th><th>$\alpha=0.995$</th><th>$\alpha=0.975$</th><th>$\alpha=0.95$</th><th>$\alpha=0.05$</th><th>$\alpha=0.025$</th><th>$\alpha=0.01$</th><th>$\alpha=0.005$</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>0.00004</td><td>0.00098</td><td>0.00393</td><td>3.841</td><td>5.024</td><td>6.635</td><td>7.879</td></tr>
+                <tr><td>5</td><td>0.412</td><td>0.831</td><td>1.145</td><td>11.070</td><td>12.833</td><td>15.086</td><td>16.750</td></tr>
+                <tr><td>10</td><td>2.156</td><td>3.247</td><td>3.940</td><td>18.307</td><td>20.483</td><td>23.209</td><td>25.188</td></tr>
+                <tr><td>15</td><td>4.601</td><td>6.262</td><td>7.261</td><td>24.996</td><td>27.488</td><td>30.578</td><td>32.801</td></tr>
+                <tr><td>20</td><td>7.434</td><td>9.591</td><td>10.851</td><td>31.410</td><td>34.170</td><td>37.566</td><td>39.997</td></tr>
+                <tr><td>25</td><td>10.520</td><td>13.120</td><td>14.611</td><td>37.652</td><td>40.646</td><td>44.314</td><td>46.928</td></tr>
+                <tr><td>30</td><td>13.787</td><td>16.791</td><td>18.493</td><td>43.773</td><td>46.979</td><td>50.892</td><td>53.672</td></tr>
+                <tr><td>40</td><td>20.707</td><td>24.433</td><td>26.509</td><td>55.758</td><td>59.342</td><td>63.691</td><td>66.766</td></tr>
+                <tr><td>50</td><td>27.991</td><td>32.357</td><td>34.764</td><td>67.505</td><td>71.420</td><td>76.154</td><td>79.490</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-top:2rem;">
+          <button class="btn-icon" onclick="navTo('app1')">← Phụ lục 1</button>
+          <button class="btn-icon" style="background:var(--primary); color:#fff;" onclick="navTo('home')">Trang chủ 🏠</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <button id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</button>
+
+  <script>
+    const views = ['home', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10', 'app1', 'app2'];
+
+    function navTo(targetId) {
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        if (el) el.style.display = (v === targetId) ? 'block' : 'none';
+        const navEl = document.getElementById('nav-' + v);
+        if (navEl) {
+          if (v === targetId) navEl.classList.add('active');
+          else navEl.classList.remove('active');
+        }
+      });
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      setTimeout(initKaTeX, 30);
+      const sb = document.getElementById('sidebar');
+      if (sb) sb.classList.remove('mobile-open');
+    }
+
+    function switchChTab(chPrefix, tabName, btn) {
+      const parent = document.getElementById('view-' + chPrefix);
+      if (!parent) return;
+      parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById(chPrefix + '-' + tabName);
+      if (pane) pane.classList.add('active');
+      setTimeout(initKaTeX, 30);
+    }
+
+    function toggleTheme() {
+      const curr = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', curr);
+      document.getElementById('theme-toggle-btn').innerText = (curr === 'dark') ? '☀️' : '🌙';
+    }
+
+    let fontSize = 16;
+    function adjustFontSize(delta) {
+      if (delta === 0) fontSize = 16;
+      else fontSize = Math.min(24, Math.max(13, fontSize + delta));
+      document.documentElement.style.setProperty('--base-font-size', fontSize + 'px');
+    }
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); }
+
+    function initKaTeX() {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      const bar = document.getElementById('progress-bar');
+      if (bar) bar.style.width = scrolled + '%';
+      const btt = document.getElementById('back-to-top');
+      if (btt) btt.style.display = winScroll > 300 ? 'flex' : 'none';
+    });
+  </script>
+</body>
+</html>
